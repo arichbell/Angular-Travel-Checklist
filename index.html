@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="travelApp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Travel Checklist</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+<script src="js/angular.min.js"></script>
+<script>
+
+var model = {
+		user: "Traveller",
+		items:[{action: "Pack Bags", done: false},
+		       {action: "Check Passport", done: false},
+		       {action: "Book Tickets", done: true},
+		       {action: "Reserve Hotel", done: false}]
+};
+
+var travelApp = angular.module("travelApp", []);
+travelApp.controller("TravelCtrl", function($scope){
+$scope.travel = model;
+
+$scope.incompleteCount = function(){
+	var count = 0;
+	angular.forEach($scope.travel.items, function(item){
+		if(!item.done){count++}
+		});
+		return count;
+}
+$scope.warningLevel = function(){
+	return $scope.incompleteCount() < 3 ? "label-success" : "label-warning";
+}
+
+$scope.addNewItem = function(actionText){
+$scope.travel.items.push({action: actionText, done: false });
+}
+
+});
+
+
+
+</script>
+</head>
+<body ng-controller="TravelCtrl">
+<div class="page-header">
+<h1>{{travel.user}}'s To Do List
+<span class="label label-default" ng-class="warningLevel()" ng-hide="incompleteCount() == 0">{{incompleteCount()}}</span>
+</h1>
+
+</div>
+<div class="panel">
+<div class="input-group">
+  <input class="form-control" ng-model="actionText" />
+  <span class="input-group-btn">
+  <button class="btn btn-default"
+  ng-click="addNewItem(actionText)">Add</button>
+  </span>
+</div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Description</th>
+			<th>Done</th>
+		</tr>
+	</thead>
+	<tbody>
+	
+	<tr ng-repeat="item in travel.items">
+	<td>{{item.action}}</td>
+	<td><input type="checkbox" ng-model="item.done" /></td>
+	</tr>
+	</tbody>
+</table>
+
+
+</div>
+
+</body>
+</html>
